@@ -1,8 +1,22 @@
 <script setup>
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import {Link, Head} from '@inertiajs/vue3'
+import {Link, Head, router} from '@inertiajs/vue3'
+import { reactive } from 'vue'
 
-const form = '' // placeholder value
+const props = defineProps({ accounts: Array, errors: Object, account_id: Number });
+
+const form = reactive({
+    first_name: null,
+    last_name: null,
+    email: null,
+    phone: null,
+    position: null,
+    account_id: props.account_id,
+})
+
+function submit() {
+    router.post('/contacts', form)
+}
 </script>
 
 <template>
@@ -15,17 +29,18 @@ const form = '' // placeholder value
                     <div class="md:col-span-1">
                         <h3 class="text-lg font-medium leading-6 text-gray-900">Contact Information</h3>
                         <ul class="mt-6">
-                            <li class="text-red-500" v-for="error in form.errors">{{ error }}</li>
+                            <li class="text-red-500" v-for="error in errors">{{ error }}</li>
                         </ul>
                     </div>
                     <div class="mt-5 md:mt-0 md:col-span-2">
-                        <form>
+                        <form @submit.prevent="submit">
                             <div class="grid grid-cols-6 gap-6">
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="first-name" class="block text-sm font-medium text-gray-700">First Name</label>
                                     <input
                                         type="text"
                                         id="first-name"
+                                        v-model="form.first_name"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     >
                                 </div>
@@ -35,6 +50,7 @@ const form = '' // placeholder value
                                     <input
                                         type="text"
                                         id="last-name"
+                                        v-model="form.last_name"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     >
                                 </div>
@@ -44,6 +60,7 @@ const form = '' // placeholder value
                                     <input
                                         type="email"
                                         id="email"
+                                        v-model="form.email"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     >
                                 </div>
@@ -53,15 +70,17 @@ const form = '' // placeholder value
                                     <input
                                         type="tel"
                                         id="phone"
+                                        v-model="form.phone"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     >
                                 </div>
 
                                 <div class="col-span-6 sm:col-span-3">
-                                    <label for="position" class="block text-sm font-medium text-gray-700">First Name</label>
+                                    <label for="position" class="block text-sm font-medium text-gray-700">Position</label>
                                     <input
                                         type="text"
                                         id="position"
+                                        v-model="form.position"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     >
                                 </div>
@@ -70,9 +89,10 @@ const form = '' // placeholder value
                                     <label for="account" class="block text-sm font-medium text-gray-700">Account</label>
                                     <select
                                         id="account"
+                                        v-model="form.account_id"
                                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                     >
-                                        <option></option>
+                                        <option v-for="account in accounts" :value="account.id">{{ account.name }}</option>
                                     </select>
                                 </div>
                             </div>

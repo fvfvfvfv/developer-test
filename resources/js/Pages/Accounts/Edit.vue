@@ -1,8 +1,29 @@
 <script setup>
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue'
-import {Link, Head} from '@inertiajs/vue3'
+import {Link, Head, router} from '@inertiajs/vue3'
+import { reactive } from 'vue'
 
-const form = '' // placeholder value
+const props = defineProps({ account: Object, users: Array, errors: Object });
+
+const form = reactive({
+    name: props.account.name,
+    owner_id: props.account.owner_id,
+    phone: props.account.phone,
+    country: props.account.country,
+    address: props.account.address,
+    town_city: props.account.town_city,
+    post_code: props.account.post_code,
+})
+
+function submit() {
+    router.put('/accounts/' + props.account.id, form)
+}
+
+function remove() {
+    if (confirm('Are you sure you want to delete this account?')) {
+        router.delete('/accounts/' + props.account.id);
+    }
+}
 </script>
 
 <template>
@@ -15,28 +36,30 @@ const form = '' // placeholder value
                     <div class="md:col-span-1">
                         <h3 class="text-lg font-medium leading-6 text-gray-900">Account Information</h3>
                         <ul class="mt-6">
-                            <li class="text-red-500" v-for="error in form.errors">{{ error }}</li>
+                            <li class="text-red-500" v-for="error in errors">{{ error }}</li>
                         </ul>
                     </div>
                     <div class="mt-5 md:mt-0 md:col-span-2">
-                        <form>
+                        <form @submit.prevent="submit">
                             <div class="grid grid-cols-6 gap-6">
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                                     <input
                                         type="text"
                                         id="name"
+                                        v-model="form.name"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     >
                                 </div>
 
                                 <div class="col-span-6 sm:col-span-3">
-                                    <label for="owner" class="block text-sm font-medium text-gray-700">Owner</label>
+                                    <label for="owner_id" class="block text-sm font-medium text-gray-700">Owner</label>
                                     <select
-                                        id="owner"
+                                        id="owner_id"
+                                        v-model="form.owner_id"
                                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                     >
-                                        <option></option>
+                                        <option v-for="user in users" :value="user.id" :selected="account.owner_id === user.id">{{ user.name }}</option>
                                     </select>
                                 </div>
 
@@ -45,6 +68,7 @@ const form = '' // placeholder value
                                     <input
                                         type="tel"
                                         id="phone"
+                                        v-model="form.phone"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     >
                                 </div>
@@ -54,6 +78,7 @@ const form = '' // placeholder value
                                     <input
                                         type="text"
                                         id="country"
+                                        v-model="form.country"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     >
                                 </div>
@@ -63,6 +88,7 @@ const form = '' // placeholder value
                                     <input
                                         type="text"
                                         id="address"
+                                        v-model="form.address"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     >
                                 </div>
@@ -72,6 +98,7 @@ const form = '' // placeholder value
                                     <input
                                         type="text"
                                         id="city"
+                                        v-model="form.town_city"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     >
                                 </div>
@@ -81,6 +108,7 @@ const form = '' // placeholder value
                                     <input
                                         type="text"
                                         id="post-code"
+                                        v-model="form.post_code"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     >
                                 </div>
@@ -89,6 +117,7 @@ const form = '' // placeholder value
                                 <button
                                     type="button"
                                     class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    @click="remove"
                                 >
                                     Delete
                                 </button>

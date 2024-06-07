@@ -2,6 +2,8 @@
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
 import { Link, Head } from '@inertiajs/vue3';
 
+defineProps({ accounts: Array });
+
 </script>
 
 <template>
@@ -13,7 +15,7 @@ import { Link, Head } from '@inertiajs/vue3';
                 <Link :href="route('accounts.create')" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Create Account</Link>
             </div>
             <div class="flex flex-col">
-                <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="-my-2 overflow-x-hidden sm:-mx-6 lg:-mx-8">
                     <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                             <table class="min-w-full divide-y divide-gray-200">
@@ -32,16 +34,16 @@ import { Link, Head } from '@inertiajs/vue3';
                                 </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
+                                <tr v-for="account in accounts">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ account.name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ account.country }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ account.town_city }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ account.phone }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <Link :href="route('accounts.show', account.id)" class="cursor-pointer text-indigo-600 hover:text-indigo-900">View</Link>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <InertiaLink :href="route('accounts.edit', account.id)" class="cursor-pointer text-indigo-600 hover:text-indigo-900">Edit</InertiaLink>
+                                        <Link :href="route('accounts.edit', account.id)" class="cursor-pointer text-indigo-600 hover:text-indigo-900">Edit</Link>
                                     </td>
                                 </tr>
                                 </tbody>
